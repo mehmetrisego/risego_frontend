@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,24 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
+    <!-- Light Rays Background (React Bits style) -->
+    <div id="lightRaysBg" class="light-rays-container"></div>
+
     <div class="app-container">
         <!-- Login Page -->
         <div id="loginPage" class="page active">
             <div class="login-card">
                 <div class="logo-section">
-                    <div class="logo">
-                        <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-                            <rect width="52" height="52" rx="14" fill="url(#logo-gradient)"/>
-                            <path d="M16 26L23 33L36 18" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                            <defs>
-                                <linearGradient id="logo-gradient" x1="0" y1="0" x2="52" y2="52" gradientUnits="userSpaceOnUse">
-                                    <stop stop-color="#6366f1"/>
-                                    <stop offset="1" stop-color="#8b5cf6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
                     <h1 class="app-title">RiseGo</h1>
                     <p class="app-subtitle">Sürücü Paneli</p>
                 </div>
@@ -45,7 +38,8 @@
                         </select>
                         <div class="select-arrow">
                             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </div>
                     </div>
@@ -57,14 +51,16 @@
                         <span id="selectedCityText"></span>
                         <button class="change-city-btn" onclick="changeCity()">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                <path d="M1 13L5 9M9.5 4.5L13 1M13 1H9M13 1V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M1 13L5 9M9.5 4.5L13 1M13 1H9M13 1V5" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                     </div>
                     <label class="form-label" for="phoneInput">Telefon numaranızı giriniz</label>
                     <div class="phone-input-wrapper">
                         <span class="phone-prefix">+90</span>
-                        <input type="tel" id="phoneInput" class="form-input" placeholder="5XX XXX XX XX" maxlength="13" oninput="formatPhone(this)">
+                        <input type="tel" id="phoneInput" class="form-input" placeholder="5XX XXX XX XX" maxlength="13"
+                            oninput="formatPhone(this)">
                     </div>
                     <button id="loginBtn" class="btn-primary" onclick="handleLogin()" disabled>
                         <span class="btn-text">Giriş Yap</span>
@@ -72,7 +68,77 @@
                             <div class="spinner"></div>
                         </span>
                     </button>
+                    <button type="button" class="btn-register" onclick="goToRegister()">Kayıt Ol</button>
                     <div id="loginError" class="error-message"></div>
+                </div>
+
+                <!-- Step: Registration Form (hidden initially) -->
+                <div id="stepRegister" class="form-step">
+                    <div class="register-header">
+                        <button class="back-btn" onclick="backFromRegister()">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                        <div class="selected-city-badge register-city-badge" id="registerCityBadge">
+                            <span id="registerCityText"></span>
+                        </div>
+                        <h3 class="register-title">Sürücü Kaydı</h3>
+                        <p class="register-subtitle">Parka katılmak için bilgilerinizi giriniz</p>
+                    </div>
+                    <form id="registerForm" class="register-form" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label class="form-label" for="regFirstName">Ad</label>
+                            <input type="text" id="regFirstName" class="form-input" placeholder="Adınız" required
+                                maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regLastName">Soyad</label>
+                            <input type="text" id="regLastName" class="form-input" placeholder="Soyadınız" required
+                                maxlength="50">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regPhone">Telefon Numarası</label>
+                            <div class="phone-input-wrapper">
+                                <span class="phone-prefix">+90</span>
+                                <input type="tel" id="regPhone" class="form-input" placeholder="5XX XXX XX XX"
+                                    maxlength="13" required oninput="formatRegPhone(this)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regTcNo">TC Kimlik No</label>
+                            <input type="text" id="regTcNo" class="form-input"
+                                placeholder="11 haneli TC kimlik numarası" maxlength="11" required
+                                oninput="this.value = this.value.replace(/\D/g,'')" inputmode="numeric">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regLicenseNo">Sürücü Belgesi Seri ve No</label>
+                            <input type="text" id="regLicenseNo" class="form-input" placeholder="Örn: A12345678"
+                                required maxlength="20">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="regLicenseIssueDate">Belge Veriliş Tarihi</label>
+                                <input type="date" id="regLicenseIssueDate" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="regLicenseExpiryDate">Belge Geçerlilik Tarihi</label>
+                                <input type="date" id="regLicenseExpiryDate" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="regBirthDate">Doğum Tarihi</label>
+                            <input type="date" id="regBirthDate" class="form-input" required>
+                        </div>
+                        <div id="registerError" class="error-message"></div>
+                        <button type="submit" id="registerSubmitBtn" class="btn-primary">
+                            <span class="btn-text">Kayıt Ol</span>
+                            <span class="btn-loader" style="display:none">
+                                <div class="spinner"></div>
+                            </span>
+                        </button>
+                    </form>
                 </div>
 
                 <!-- Step 3: OTP Verification (hidden initially) -->
@@ -80,21 +146,29 @@
                     <div class="otp-header">
                         <button class="back-btn" onclick="backToPhone()">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                         <div>
                             <p class="otp-title">Doğrulama Kodu</p>
-                            <p class="otp-subtitle" id="otpPhoneText">+90 5XX XXX XX XX numarasına doğrulama kodu gönderildi</p>
+                            <p class="otp-subtitle" id="otpPhoneText">+90 5XX XXX XX XX numarasına doğrulama kodu
+                                gönderildi</p>
                         </div>
                     </div>
                     <div class="otp-inputs">
-                        <input type="text" class="otp-input" maxlength="1" data-index="0" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
-                        <input type="text" class="otp-input" maxlength="1" data-index="1" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
-                        <input type="text" class="otp-input" maxlength="1" data-index="2" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
-                        <input type="text" class="otp-input" maxlength="1" data-index="3" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
-                        <input type="text" class="otp-input" maxlength="1" data-index="4" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
-                        <input type="text" class="otp-input" maxlength="1" data-index="5" oninput="handleOTPInput(this)" onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="0" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="1" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="2" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="3" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="4" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
+                        <input type="text" class="otp-input" maxlength="1" data-index="5" oninput="handleOTPInput(this)"
+                            onkeydown="handleOTPKeydown(event, this)">
                     </div>
                     <button id="verifyBtn" class="btn-primary" onclick="handleVerifyOTP()" disabled>
                         <span class="btn-text">Doğrula</span>
@@ -126,9 +200,14 @@
                     </div>
                     <button class="logout-btn" onclick="handleLogout()">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M13.3333 14.1667L17.5 10L13.3333 5.83333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M17.5 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path
+                                d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <path d="M13.3333 14.1667L17.5 10L13.3333 5.83333" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M17.5 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
                         </svg>
                         Çıkış
                     </button>
@@ -138,7 +217,10 @@
                     <div class="profile-card">
                         <div class="card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9845 21.5573 21.2136 21.3521 21.4019C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5342 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.18999 12.85C3.49997 10.2412 2.44824 7.27099 2.11999 4.18C2.09501 3.90347 2.12787 3.62476 2.2165 3.36162C2.30513 3.09849 2.44756 2.85669 2.63476 2.65162C2.82196 2.44655 3.0498 2.28271 3.30379 2.17052C3.55777 2.05833 3.83233 2.00026 4.10999 2H7.10999C7.5953 1.99522 8.06579 2.16708 8.43376 2.48353C8.80173 2.79999 9.04207 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.97366 7.27691 9.89389 7.65088C9.81411 8.02485 9.62886 8.36811 9.35999 8.64L8.08999 9.91C9.51355 12.4136 11.5864 14.4864 14.09 15.91L15.36 14.64C15.6319 14.3711 15.9751 14.1859 16.3491 14.1061C16.7231 14.0263 17.1121 14.0555 17.47 14.19C18.3773 14.5286 19.3199 14.7634 20.28 14.89C20.7658 14.9585 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0122 16.4296 22 16.92Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path
+                                    d="M22 16.92V19.92C22.0011 20.1985 21.9441 20.4742 21.8325 20.7294C21.7209 20.9845 21.5573 21.2136 21.3521 21.4019C21.1468 21.5901 20.9046 21.7335 20.6407 21.8227C20.3769 21.9119 20.0974 21.9451 19.82 21.92C16.7428 21.5856 13.787 20.5342 11.19 18.85C8.77382 17.3147 6.72533 15.2662 5.18999 12.85C3.49997 10.2412 2.44824 7.27099 2.11999 4.18C2.09501 3.90347 2.12787 3.62476 2.2165 3.36162C2.30513 3.09849 2.44756 2.85669 2.63476 2.65162C2.82196 2.44655 3.0498 2.28271 3.30379 2.17052C3.55777 2.05833 3.83233 2.00026 4.10999 2H7.10999C7.5953 1.99522 8.06579 2.16708 8.43376 2.48353C8.80173 2.79999 9.04207 3.23945 9.10999 3.72C9.23662 4.68007 9.47144 5.62273 9.80999 6.53C9.94454 6.88792 9.97366 7.27691 9.89389 7.65088C9.81411 8.02485 9.62886 8.36811 9.35999 8.64L8.08999 9.91C9.51355 12.4136 11.5864 14.4864 14.09 15.91L15.36 14.64C15.6319 14.3711 15.9751 14.1859 16.3491 14.1061C16.7231 14.0263 17.1121 14.0555 17.47 14.19C18.3773 14.5286 19.3199 14.7634 20.28 14.89C20.7658 14.9585 21.2094 15.2032 21.5265 15.5775C21.8437 15.9518 22.0122 16.4296 22 16.92Z"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </div>
                         <div class="card-content">
@@ -150,18 +232,24 @@
                     <div class="profile-card">
                         <div class="card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <rect x="1" y="3" width="15" height="13" rx="2" stroke="currentColor" stroke-width="2"/>
-                                <path d="M16 8H20L23 11V16H16V8Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="5.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
-                                <circle cx="18.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2"/>
+                                <rect x="1" y="3" width="15" height="13" rx="2" stroke="currentColor"
+                                    stroke-width="2" />
+                                <path d="M16 8H20L23 11V16H16V8Z" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <circle cx="5.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2" />
+                                <circle cx="18.5" cy="18.5" r="2.5" stroke="currentColor" stroke-width="2" />
                             </svg>
                         </div>
                         <div class="card-content">
                             <div class="card-label-row">
                                 <p class="card-label">Kayıtlı Araç</p>
-                                <button class="card-edit-btn" id="editCarBtn" onclick="openEditPlate()" title="Plakayı Düzenle">
+                                <button class="card-edit-btn" id="editCarBtn" onclick="openEditPlate()"
+                                    title="Plakayı Düzenle">
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                                        <path d="M10.08 1.42a1.5 1.5 0 0 1 2.12 0l.38.38a1.5 1.5 0 0 1 0 2.12L5.13 11.33 1.5 12.5l1.17-3.63L10.08 1.42Z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path
+                                            d="M10.08 1.42a1.5 1.5 0 0 1 2.12 0l.38.38a1.5 1.5 0 0 1 0 2.12L5.13 11.33 1.5 12.5l1.17-3.63L10.08 1.42Z"
+                                            stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                                            stroke-linejoin="round" />
                                     </svg>
                                 </button>
                             </div>
@@ -172,16 +260,21 @@
                     <div class="profile-card trip-card">
                         <div class="card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M3 12h4l3-9 4 18 3-9h4" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
                         <div class="card-content">
                             <p class="card-label">Yolculuk Sayısı</p>
                             <div class="period-tabs">
-                                <button class="period-tab" data-period="daily" onclick="changeTripPeriod('daily')">Günlük</button>
-                                <button class="period-tab" data-period="weekly" onclick="changeTripPeriod('weekly')">Haftalık</button>
-                                <button class="period-tab" data-period="monthly" onclick="changeTripPeriod('monthly')">Aylık</button>
-                                <button class="period-tab active" data-period="all" onclick="changeTripPeriod('all')">Toplam</button>
+                                <button class="period-tab" data-period="daily"
+                                    onclick="changeTripPeriod('daily')">Günlük</button>
+                                <button class="period-tab" data-period="weekly"
+                                    onclick="changeTripPeriod('weekly')">Haftalık</button>
+                                <button class="period-tab" data-period="monthly"
+                                    onclick="changeTripPeriod('monthly')">Aylık</button>
+                                <button class="period-tab active" data-period="all"
+                                    onclick="changeTripPeriod('all')">Toplam</button>
                             </div>
                             <div class="trip-count-display">
                                 <p class="card-value card-value-large" id="profileTrips">0</p>
@@ -195,9 +288,12 @@
                     <div class="profile-card">
                         <div class="card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4Z" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </div>
                         <div class="card-content">
@@ -205,10 +301,30 @@
                             <p class="card-value card-value-large" id="profileBalance">-</p>
                         </div>
                     </div>
+
+                    <!-- Güncel Kampanya Kartı -->
+                    <div class="profile-card campaign-card-frontend" id="campaignCardFrontend">
+                        <div class="card-icon campaign-card-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-label">Güncel Kampanya</p>
+                            <p class="card-value campaign-text" id="profileCampaignText">Yükleniyor...</p>
+                        </div>
+                    </div>
+
                     <div class="profile-card leaderboard-widget" onclick="openLeaderboard()">
                         <div class="card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M6 9v4a6 6 0 0 0 12 0V9M6 9h12M9 21h6M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path
+                                    d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M6 9v4a6 6 0 0 0 12 0V9M6 9h12M9 21h6M12 17v4"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" />
                             </svg>
                         </div>
                         <div class="card-content">
@@ -226,7 +342,8 @@
                 <div class="leaderboard-header">
                     <button class="back-btn" onclick="closeLeaderboard()">
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
                     <h2 class="leaderboard-title">Sıralama Tablosu</h2>
@@ -242,25 +359,142 @@
         </div>
     </div>
 
-    <!-- Edit Plate Modal -->
+    <!-- Edit Plate Modal - Plaka girişi -->
     <div id="editPlateModal" class="modal">
         <div class="modal-content modal-sm">
             <button class="modal-close-btn" onclick="closeEditPlate()" title="Kapat">&times;</button>
-            <h3 class="modal-title">Plaka Düzenle</h3>
-            <p class="modal-text">Aracınızın yeni plaka numarasını giriniz.</p>
-            <input type="text" id="plateInput" class="form-input plate-input" placeholder="34 ABC 123" maxlength="15" oninput="this.value = this.value.toUpperCase()">
+            <h3 class="modal-title">Araç Değiştir</h3>
+            <p class="modal-text">Değiştirmek istediğiniz aracın plaka numarasını giriniz.</p>
+            <input type="text" id="plateInput" class="form-input plate-input" placeholder="35T5041" maxlength="15"
+                oninput="this.value = this.value.toUpperCase()">
             <div id="plateError" class="error-message"></div>
             <div class="modal-actions">
-                <button class="btn-secondary" onclick="closeEditPlate()">İptal</button>
-                <button class="btn-primary btn-sm" id="savePlateBtn" onclick="savePlate()">
-                    <span class="btn-text">Kaydet</span>
-                    <span class="btn-loader" style="display:none"><div class="spinner"></div></span>
+                <button type="button" class="btn-secondary" onclick="closeEditPlate()">İptal</button>
+                <button type="button" class="btn-primary btn-sm" id="checkPlateBtn" onclick="checkPlate()">
+                    <span class="btn-text">Ara</span>
+                    <span class="btn-loader" style="display:none">
+                        <div class="spinner"></div>
+                    </span>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Onay Modal - Kayıtlı araç bulundu -->
+    <div id="confirmCarModal" class="modal">
+        <div class="modal-content modal-sm">
+            <button class="modal-close-btn" onclick="closeConfirmCar()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Araç Onayı</h3>
+            <p class="modal-text" id="confirmCarText">Bu araç sürücünüze atanacaktır.</p>
+            <div class="car-info-box" id="confirmCarInfo">
+                <p class="car-info-brand" id="confirmCarBrand">-</p>
+                <p class="car-info-model" id="confirmCarModel">-</p>
+                <p class="car-info-year" id="confirmCarYear">-</p>
+            </div>
+            <p class="modal-text modal-text-small">Aracınız bu araç olarak değiştirilecektir.</p>
+            <div class="modal-actions modal-actions-confirm">
+                <button type="button" class="btn-vazgec" onclick="closeConfirmCar()">Vazgeç</button>
+                <button type="button" class="btn-onayla" onclick="confirmCarChange()">
+                    <span class="btn-text">Onayla</span>
+                    <span class="btn-loader" style="display:none">
+                        <div class="spinner"></div>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yeni Araç Kayıt Modal - Plaka sistemde yok -->
+    <div id="newCarModal" class="modal">
+        <div class="modal-content modal-sm">
+            <button class="modal-close-btn" onclick="closeNewCarModal()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Yeni Araç Kaydı</h3>
+            <p class="modal-text">Bu plaka sistemde kayıtlı değil. Araç bilgilerini giriniz.</p>
+            <p class="modal-text modal-text-small" id="newCarPlateDisplay"></p>
+            <div class="form-group">
+                <label class="form-label" for="newCarBrand">Marka</label>
+                <div class="select-wrapper">
+                    <select id="newCarBrand" class="form-select">
+                        <option value="">Marka seçin...</option>
+                    </select>
+                    <div class="select-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="newCarModel">Model</label>
+                <input type="text" id="newCarModel" class="form-input plate-input" placeholder="Örn: Corolla, E-klasse">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="newCarYear">Yıl</label>
+                <div class="select-wrapper">
+                    <select id="newCarYear" class="form-select">
+                        <option value="">Yıl seçin...</option>
+                    </select>
+                    <div class="select-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div id="newCarError" class="error-message"></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeNewCarModal()">İptal</button>
+                <button class="btn-primary btn-sm" id="saveNewCarBtn" onclick="saveNewCar()">
+                    <span class="btn-text">Kaydet</span>
+                    <span class="btn-loader" style="display:none">
+                        <div class="spinner"></div>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kayıt OTP Doğrulama Modal -->
+    <div id="registerOtpModal" class="modal">
+        <div class="modal-content modal-sm">
+            <button class="modal-close-btn" onclick="closeRegisterOtpModal()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Doğrulama Kodu</h3>
+            <p class="modal-text" id="registerOtpPhoneText">+90 5XX XXX XX XX numarasına gönderilen kodu giriniz</p>
+            <div class="otp-inputs register-otp-inputs">
+                <input type="text" class="otp-input" maxlength="1" data-index="0" inputmode="numeric" pattern="[0-9]*"
+                    autocomplete="one-time-code" oninput="handleRegisterOtpInput(this)"
+                    onkeydown="handleRegisterOtpKeydown(event, this)" onpaste="handleRegisterOtpPaste(event)">
+                <input type="text" class="otp-input" maxlength="1" data-index="1" inputmode="numeric" pattern="[0-9]*"
+                    oninput="handleRegisterOtpInput(this)" onkeydown="handleRegisterOtpKeydown(event, this)"
+                    onpaste="handleRegisterOtpPaste(event)">
+                <input type="text" class="otp-input" maxlength="1" data-index="2" inputmode="numeric" pattern="[0-9]*"
+                    oninput="handleRegisterOtpInput(this)" onkeydown="handleRegisterOtpKeydown(event, this)"
+                    onpaste="handleRegisterOtpPaste(event)">
+                <input type="text" class="otp-input" maxlength="1" data-index="3" inputmode="numeric" pattern="[0-9]*"
+                    oninput="handleRegisterOtpInput(this)" onkeydown="handleRegisterOtpKeydown(event, this)"
+                    onpaste="handleRegisterOtpPaste(event)">
+                <input type="text" class="otp-input" maxlength="1" data-index="4" inputmode="numeric" pattern="[0-9]*"
+                    oninput="handleRegisterOtpInput(this)" onkeydown="handleRegisterOtpKeydown(event, this)"
+                    onpaste="handleRegisterOtpPaste(event)">
+                <input type="text" class="otp-input" maxlength="1" data-index="5" inputmode="numeric" pattern="[0-9]*"
+                    oninput="handleRegisterOtpInput(this)" onkeydown="handleRegisterOtpKeydown(event, this)"
+                    onpaste="handleRegisterOtpPaste(event)">
+            </div>
+            <div id="registerOtpError" class="error-message"></div>
+            <button type="button" id="registerOtpVerifyBtn" class="btn-primary btn-sm"
+                onclick="handleRegisterOtpVerify()" disabled>
+                <span class="btn-text">Doğrula</span>
+                <span class="btn-loader" style="display:none">
+                    <div class="spinner"></div>
+                </span>
+            </button>
+        </div>
+    </div>
+
+    <script src="js/lightRays.js"></script>
     <script src="js/app.js"></script>
 </body>
-</html>
 
+</html>

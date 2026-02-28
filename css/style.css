@@ -82,6 +82,35 @@ body::after {
 }
 
 /* ============================================
+   Light Rays Background (React Bits style)
+   https://reactbits.dev/backgrounds/light-rays
+   ============================================ */
+
+.light-rays-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+    -webkit-touch-callout: none;
+}
+
+/* WebGL desteklenmiyorsa (eski mobil tarayıcılar) CSS fallback */
+.light-rays-container.light-rays-fallback {
+    background: linear-gradient(180deg,
+            rgba(99, 102, 241, 0.12) 0%,
+            rgba(99, 102, 241, 0.04) 30%,
+            transparent 70%);
+}
+
+/* ============================================
    App Container & Pages
    ============================================ */
 
@@ -110,32 +139,67 @@ body::after {
    ============================================ */
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-    50% { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.1); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.1);
+    }
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ============================================
@@ -174,22 +238,11 @@ body::after {
     margin-bottom: 40px;
 }
 
-.logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.logo svg {
-    filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.2));
-}
-
 .app-title {
     font-size: 30px;
     font-weight: 700;
     letter-spacing: -0.5px;
+    margin-bottom: 6px;
     background: linear-gradient(135deg, #fff 0%, #c7c9d3 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -382,7 +435,7 @@ body::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
     opacity: 0;
     transition: opacity 0.25s;
 }
@@ -418,6 +471,84 @@ body::after {
     text-align: center;
     min-height: 18px;
     animation: fadeIn 0.3s var(--ease);
+}
+
+/* ============================================
+   Register Button (below Giriş Yap)
+   ============================================ */
+
+.btn-register {
+    width: 100%;
+    padding: 12px 24px;
+    margin-top: 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+}
+
+.btn-register:hover {
+    border-color: var(--border-hover);
+    color: var(--text);
+    background: var(--surface-hover);
+}
+
+/* ============================================
+   Registration Form
+   ============================================ */
+
+.register-header {
+    margin-bottom: 24px;
+}
+
+.register-city-badge {
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.register-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.register-subtitle {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.register-form .form-group {
+    margin-bottom: 0;
+}
+
+.register-form .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.register-form .form-label {
+    margin-bottom: 8px;
+}
+
+.register-form input[type="date"] {
+    cursor: pointer;
+}
+
+.register-form .btn-primary {
+    margin-top: 8px;
 }
 
 /* ============================================
@@ -669,7 +800,7 @@ body::after {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
     pointer-events: none;
 }
 
@@ -822,6 +953,55 @@ body::after {
    ============================================ */
 
 /* ============================================
+   Güncel Kampanya Kartı (Frontend)
+   ============================================ */
+
+.campaign-card-frontend {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.04) 0%, rgba(245, 158, 11, 0.02) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    transition: all 0.3s var(--ease);
+}
+
+.campaign-card-frontend:hover {
+    border-color: rgba(251, 191, 36, 0.2);
+}
+
+.campaign-card-frontend.campaign-active {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.06) 0%, rgba(16, 185, 129, 0.03) 100%);
+    border-color: rgba(52, 211, 153, 0.15);
+}
+
+.campaign-card-frontend.campaign-active:hover {
+    border-color: rgba(52, 211, 153, 0.3);
+    box-shadow: 0 4px 20px rgba(52, 211, 153, 0.08);
+}
+
+.campaign-card-icon {
+    color: var(--warning) !important;
+    background: rgba(251, 191, 36, 0.1) !important;
+    border-color: rgba(251, 191, 36, 0.15) !important;
+}
+
+.campaign-card-frontend.campaign-active .campaign-card-icon {
+    color: var(--success) !important;
+    background: rgba(52, 211, 153, 0.1) !important;
+    border-color: rgba(52, 211, 153, 0.15) !important;
+}
+
+.campaign-text {
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: var(--text-secondary) !important;
+    line-height: 1.5 !important;
+    word-break: break-word;
+}
+
+.campaign-card-frontend.campaign-active .campaign-text {
+    color: var(--text) !important;
+    font-weight: 500 !important;
+}
+
+/* ============================================
    Leaderboard Widget
    ============================================ */
 
@@ -864,6 +1044,7 @@ body::after {
     display: none;
     justify-content: flex-start;
 }
+
 #leaderboardPage.active {
     display: flex;
 }
@@ -913,10 +1094,10 @@ body::after {
 
 .leaderboard-total {
     text-align: center;
-    font-size: 13px;
-    color: var(--text-muted);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text);
     margin-bottom: 20px;
-    font-weight: 500;
     letter-spacing: 0.3px;
 }
 
@@ -1218,6 +1399,107 @@ body::after {
     padding: 12px 20px;
 }
 
+/* Onayla (yeşil) ve Vazgeç (kırmızı) butonları */
+.btn-onayla {
+    flex: 1;
+    padding: 12px 20px;
+    margin-top: 0;
+    background: var(--success);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-onayla:hover:not(:disabled) {
+    background: #10b981;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(52, 211, 153, 0.3);
+}
+
+.btn-onayla:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-vazgec {
+    flex: 1;
+    padding: 12px 20px;
+    background: var(--error);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+}
+
+.btn-vazgec:hover {
+    background: #ef4444;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(248, 113, 113, 0.3);
+}
+
+.modal-actions-confirm {
+    margin-top: 20px;
+}
+
+.car-info-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin: 12px 0;
+    text-align: left;
+}
+
+.car-info-brand {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.car-info-model {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.car-info-year {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.modal-text-small {
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.form-group .form-label {
+    margin-bottom: 8px;
+}
+
+.form-group .form-input,
+.form-group .form-select {
+    width: 100%;
+}
+
 /* ============================================
    Session Loading & Retry
    ============================================ */
@@ -1259,8 +1541,8 @@ body::after {
 
 @media (max-width: 640px) {
     .login-card {
-        max-width: 100%;
-        margin: 16px;
+        max-width: min(400px, calc(100% - 48px));
+        margin: 24px;
         padding: 32px 24px;
         border-radius: var(--radius-xl);
     }
