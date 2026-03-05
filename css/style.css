@@ -960,6 +960,7 @@ body::after {
     background: linear-gradient(135deg, rgba(251, 191, 36, 0.04) 0%, rgba(245, 158, 11, 0.02) 100%);
     border: 1px solid rgba(251, 191, 36, 0.1);
     transition: all 0.3s var(--ease);
+    cursor: pointer;
 }
 
 .campaign-card-frontend:hover {
@@ -999,6 +1000,30 @@ body::after {
 .campaign-card-frontend.campaign-active .campaign-text {
     color: var(--text) !important;
     font-weight: 500 !important;
+}
+
+/* Kampanya Detay Modal */
+.modal-campaign {
+    max-width: 420px;
+    max-height: 85vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.campaign-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.campaign-modal-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 /* ============================================

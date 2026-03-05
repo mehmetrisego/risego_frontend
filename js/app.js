@@ -1,12 +1,12 @@
 // ============================================
 // RiseGo Sürücü Paneli - Frontend Application
 // ============================================
-// API Base: localhost'ta veya file:// ile açıldığında local sunucu, aksi halde Railway backend.
+// API Base: localhost'ta local sunucu (geliştirme), aksi halde Railway production backend.
 const API_BASE = (function () {
-    if (typeof window === 'undefined') return 'http://localhost:3000/api';
+    if (typeof window === 'undefined') return 'https://risegobackend-production-8be6.up.railway.app/api';
     const h = window.location.hostname;
-    const isLocal = h === 'localhost' || h === '127.0.0.1' || h === '' || window.location.protocol === 'file:';
-    if (isLocal) return 'http://localhost:3000/api';
+    const isLocalDev = h === 'localhost' || h === '127.0.0.1';
+    if (isLocalDev) return 'http://localhost:3000/api';
     return 'https://risegobackend-production-8be6.up.railway.app/api';
 })();
 const SESSION_KEY = 'risego_session';
@@ -740,6 +740,7 @@ function handleLogout() {
     selectedCity = '';
     tripCountCache = {};
     currentPeriod = 'all';
+    currentCampaignText = '';
     leaderboardLoaded = false;
 
     // Reset all forms
@@ -773,6 +774,8 @@ let leaderboardLoaded = false;
 // Güncel Kampanya
 // ============================================
 
+let currentCampaignText = '';
+
 /**
  * API'den aktif kampanyayı çeker ve profil sayfasındaki kartı günceller.
  * Aktif kampanya yoksa varsayılan mesaj gösterilir.
@@ -786,19 +789,35 @@ async function fetchCampaign() {
         const data = await response.json();
 
         if (data.success && data.campaign && data.campaign.active && data.campaign.text) {
+            currentCampaignText = data.campaign.text;
             campaignEl.textContent = data.campaign.text;
             // Aktif kampanya stili
             const card = document.getElementById('campaignCardFrontend');
             if (card) card.classList.add('campaign-active');
         } else {
-            campaignEl.textContent = 'Şu anda aktif kampanya bulunmamaktadır.';
+            currentCampaignText = 'Şu anda aktif kampanya bulunmamaktadır.';
+            campaignEl.textContent = currentCampaignText;
             const card = document.getElementById('campaignCardFrontend');
             if (card) card.classList.remove('campaign-active');
         }
     } catch (error) {
         console.error('[Campaign] Kampanya yükleme hatası:', error);
-        campaignEl.textContent = 'Şu anda aktif kampanya bulunmamaktadır.';
+        currentCampaignText = 'Şu anda aktif kampanya bulunmamaktadır.';
+        campaignEl.textContent = currentCampaignText;
     }
+}
+
+function openCampaignModal() {
+    const modal = document.getElementById('campaignModal');
+    const textEl = document.getElementById('campaignModalText');
+    if (!modal || !textEl) return;
+    textEl.textContent = currentCampaignText || 'Yükleniyor...';
+    modal.classList.add('active');
+}
+
+function closeCampaignModal() {
+    const modal = document.getElementById('campaignModal');
+    if (modal) modal.classList.remove('active');
 }
 
 function openLeaderboard() {
@@ -1211,6 +1230,13 @@ function updateDriverCarDisplay(car) {
 // ============================================
 
 document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        const campaignModal = document.getElementById('campaignModal');
+        if (campaignModal && campaignModal.classList.contains('active')) {
+            closeCampaignModal();
+        }
+        return;
+    }
     if (e.key === 'Enter') {
         // Araç değiştir modalı açıksa önce onu işle (Enter = Ara)
         const editPlateModal = document.getElementById('editPlateModal');

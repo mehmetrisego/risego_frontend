@@ -303,7 +303,7 @@
                     </div>
 
                     <!-- Güncel Kampanya Kartı -->
-                    <div class="profile-card campaign-card-frontend" id="campaignCardFrontend">
+                    <div class="profile-card campaign-card-frontend" id="campaignCardFrontend" onclick="openCampaignModal()" role="button" tabindex="0">
                         <div class="card-icon campaign-card-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -386,6 +386,18 @@
                     <span class="toast-text" id="lbToastText"></span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Kampanya Detay Modal -->
+    <div id="campaignModal" class="modal" onclick="if(event.target===this)closeCampaignModal()">
+        <div class="modal-content modal-campaign" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeCampaignModal()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Güncel Kampanya</h3>
+            <div class="campaign-modal-body">
+                <p class="campaign-modal-text" id="campaignModalText">Yükleniyor...</p>
+            </div>
+            <button type="button" class="btn-primary btn-sm" onclick="closeCampaignModal()">Kapat</button>
         </div>
     </div>
 
