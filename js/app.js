@@ -820,6 +820,16 @@ function closeCampaignModal() {
     if (modal) modal.classList.remove('active');
 }
 
+function openContactModal() {
+    const modal = document.getElementById('contactModal');
+    if (modal) modal.classList.add('active');
+}
+
+function closeContactModal() {
+    const modal = document.getElementById('contactModal');
+    if (modal) modal.classList.remove('active');
+}
+
 function openLeaderboard() {
     document.getElementById('profilePage').classList.remove('active');
     document.getElementById('leaderboardPage').classList.add('active');
@@ -1231,6 +1241,11 @@ function updateDriverCarDisplay(car) {
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+        const contactModal = document.getElementById('contactModal');
+        if (contactModal && contactModal.classList.contains('active')) {
+            closeContactModal();
+            return;
+        }
         const campaignModal = document.getElementById('campaignModal');
         if (campaignModal && campaignModal.classList.contains('active')) {
             closeCampaignModal();

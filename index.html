@@ -20,7 +20,7 @@
         <div id="loginPage" class="page active">
             <div class="login-card">
                 <div class="logo-section">
-                    <h1 class="app-title">RiseGo</h1>
+                    <img src="images/Logo.svg" alt="RiseGo" class="app-logo">
                     <p class="app-subtitle">Sürücü Paneli</p>
                 </div>
 
@@ -198,19 +198,27 @@
                             <p class="profile-city" id="profileCity">Şehir</p>
                         </div>
                     </div>
-                    <button class="logout-btn" onclick="handleLogout()">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                            <path
-                                d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5"
-                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                            <path d="M13.3333 14.1667L17.5 10L13.3333 5.83333" stroke="currentColor" stroke-width="1.5"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                            <path d="M17.5 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                                stroke-linejoin="round" />
-                        </svg>
-                        Çıkış
-                    </button>
+                    <div class="profile-header-buttons">
+                        <button class="contact-btn" onclick="openContactModal()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            Bize Ulaşın
+                        </button>
+                        <button class="logout-btn" onclick="handleLogout()">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path
+                                    d="M7.5 17.5H4.16667C3.72464 17.5 3.30072 17.3244 2.98816 17.0118C2.67559 16.6993 2.5 16.2754 2.5 15.8333V4.16667C2.5 3.72464 2.67559 3.30072 2.98816 2.98816C3.30072 2.67559 3.72464 2.5 4.16667 2.5H7.5"
+                                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                                <path d="M13.3333 14.1667L17.5 10L13.3333 5.83333" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M17.5 10H7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                            Çıkış
+                        </button>
+                    </div>
                 </div>
 
                 <div class="profile-cards">
@@ -386,6 +394,35 @@
                     <span class="toast-text" id="lbToastText"></span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Bize Ulaşın Modal -->
+    <div id="contactModal" class="modal" onclick="if(event.target===this)closeContactModal()">
+        <div class="modal-content modal-contact" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeContactModal()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Bize Ulaşın</h3>
+            <div class="contact-modal-body">
+                <a href="tel:+908503802525" class="contact-item">
+                    <div class="contact-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <span class="contact-text">0850 380 25 25</span>
+                </a>
+                <a href="https://instagram.com/risegoturkiye" target="_blank" rel="noopener noreferrer" class="contact-item">
+                    <div class="contact-icon contact-icon-instagram">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="18" cy="6" r="1.5" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <span class="contact-text">@risegoturkiye</span>
+                </a>
+            </div>
+            <button type="button" class="btn-primary btn-sm" onclick="closeContactModal()">Kapat</button>
         </div>
     </div>
 

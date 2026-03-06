@@ -238,15 +238,11 @@ body::after {
     margin-bottom: 40px;
 }
 
-.app-title {
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
-    background: linear-gradient(135deg, #fff 0%, #c7c9d3 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+.app-logo {
+    display: block;
+    max-width: 180px;
+    height: auto;
+    margin: 0 auto 6px;
 }
 
 .app-subtitle {
@@ -775,6 +771,36 @@ body::after {
     color: var(--error);
 }
 
+.profile-header-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.contact-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    border-radius: var(--radius-md);
+    color: var(--success);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s var(--ease);
+    box-shadow: 0 0 20px rgba(52, 211, 153, 0.15);
+}
+
+.contact-btn:hover {
+    background: rgba(52, 211, 153, 0.18);
+    border-color: rgba(52, 211, 153, 0.5);
+    color: #5eead4;
+    box-shadow: 0 0 28px rgba(52, 211, 153, 0.25);
+}
+
 /* ============================================
    Profile Cards
    ============================================ */
@@ -1024,6 +1050,60 @@ body::after {
     color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
+}
+
+/* Bize Ulaşın Modal */
+.modal-contact {
+    max-width: 360px;
+}
+
+.contact-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.25s var(--ease);
+}
+
+.contact-item:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+}
+
+.contact-icon {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.contact-icon-instagram {
+    background: linear-gradient(135deg, rgba(225, 48, 108, 0.15) 0%, rgba(253, 29, 29, 0.1) 100%);
+    border-color: rgba(225, 48, 108, 0.25);
+    color: #e1306c;
+}
+
+.contact-text {
+    font-size: 15px;
+    font-weight: 500;
 }
 
 /* ============================================
