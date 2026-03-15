@@ -32,6 +32,7 @@ let selectedCity = '';
 let phoneNumber = '';
 let otpTimer = null;
 let currentDriverData = null;
+let carBrandsWithModels = []; // modeller.txt verisi: [{ brand, models: [...] }]
 
 // Sayfa yüklendiğinde kayıtlı oturumu kontrol et
 document.addEventListener('DOMContentLoaded', checkExistingSession);
@@ -1159,11 +1160,32 @@ function showNewCarModal(plate) {
     pendingPlate = plate;
     document.getElementById('newCarPlateDisplay').textContent = `Plaka: ${plate}`;
     document.getElementById('newCarBrand').value = '';
-    document.getElementById('newCarModel').value = '';
+    document.getElementById('newCarModel').innerHTML = '<option value="">Önce marka seçin...</option>';
+    document.getElementById('newCarModel').disabled = true;
     document.getElementById('newCarYear').value = '';
     document.getElementById('newCarError').textContent = '';
     loadCarBrandsAndYears();
     document.getElementById('newCarModal').classList.add('active');
+}
+
+function onNewCarBrandChange() {
+    const brandSelect = document.getElementById('newCarBrand');
+    const modelSelect = document.getElementById('newCarModel');
+    const brand = brandSelect.value;
+
+    modelSelect.innerHTML = '<option value="">Model seçin...</option>';
+    modelSelect.disabled = !brand;
+
+    if (!brand) return;
+
+    const brandData = carBrandsWithModels.find(b => b.brand === brand);
+    const models = (brandData && brandData.models && brandData.models.length > 0) ? brandData.models : ['Diğer'];
+    models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        modelSelect.appendChild(opt);
+    });
 }
 
 function closeNewCarModal() {
@@ -1175,14 +1197,29 @@ async function loadCarBrandsAndYears() {
     const brandSelect = document.getElementById('newCarBrand');
     const yearSelect = document.getElementById('newCarYear');
 
-    if (brandSelect.options.length > 1) return;
+    if (carBrandsWithModels.length > 0 && brandSelect.options.length > 1) {
+        const currentYear = new Date().getFullYear();
+        if (yearSelect.options.length <= 1) {
+            yearSelect.innerHTML = '<option value="">Yıl seçin...</option>';
+            for (let y = currentYear; y >= 2000; y--) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                yearSelect.appendChild(opt);
+            }
+        }
+        return;
+    }
 
     try {
         const res = await fetch(`${API_BASE}/drivers/car-brands`);
         const data = await res.json();
-        if (data.success && data.brands) {
+        if (data.success) {
+            carBrandsWithModels = data.brandsWithModels || [];
+            const brands = data.brands || carBrandsWithModels.map(b => b.brand) || [];
+
             brandSelect.innerHTML = '<option value="">Marka seçin...</option>';
-            data.brands.forEach(b => {
+            brands.forEach(b => {
                 const opt = document.createElement('option');
                 opt.value = b;
                 opt.textContent = b;
@@ -1205,7 +1242,7 @@ async function loadCarBrandsAndYears() {
 
 async function saveNewCar() {
     const brand = document.getElementById('newCarBrand').value.trim();
-    const model = document.getElementById('newCarModel').value.trim();
+    const model = document.getElementById('newCarModel').value ? document.getElementById('newCarModel').value.trim() : '';
     const year = document.getElementById('newCarYear').value;
     const errorEl = document.getElementById('newCarError');
     const btn = document.getElementById('saveNewCarBtn');

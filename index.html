@@ -523,7 +523,7 @@
             <div class="form-group">
                 <label class="form-label" for="newCarBrand">Marka</label>
                 <div class="select-wrapper">
-                    <select id="newCarBrand" class="form-select">
+                    <select id="newCarBrand" class="form-select" onchange="onNewCarBrandChange()">
                         <option value="">Marka seçin...</option>
                     </select>
                     <div class="select-arrow">
@@ -536,7 +536,17 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="newCarModel">Model</label>
-                <input type="text" id="newCarModel" class="form-input plate-input" placeholder="Örn: Corolla, E-klasse">
+                <div class="select-wrapper">
+                    <select id="newCarModel" class="form-select" disabled>
+                        <option value="">Önce marka seçin...</option>
+                    </select>
+                    <div class="select-arrow">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label" for="newCarYear">Yıl</label>
