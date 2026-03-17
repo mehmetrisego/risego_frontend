@@ -152,7 +152,8 @@
     container.appendChild(canvas);
 
     // Mobil uyumluluk: farklı WebGL context seçenekleri dene
-    let gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: true });
+    const webglOpts = { alpha: true, premultipliedAlpha: true, powerPreference: 'low-power' };
+    let gl = canvas.getContext('webgl', webglOpts);
     if (!gl) gl = canvas.getContext('webgl', { alpha: true });
     if (!gl) gl = canvas.getContext('experimental-webgl', { alpha: true });
     if (!gl) {
@@ -161,7 +162,8 @@
     }
 
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? (isAndroid ? 2 : 2) : 2);
     const mouse = { x: 0.5, y: 0.5 };
     const smoothMouse = { x: 0.5, y: 0.5 };
     let animationId = null;
@@ -296,6 +298,7 @@
     const container = document.getElementById('lightRaysBg');
     if (!container) return;
     // Mobilde layout hazır olsun diye kısa gecikme
+    const isAndroid = /Android/i.test(navigator.userAgent);
     function doInit() {
       initLightRays(container, {
         raysOrigin: 'top-center',
@@ -305,7 +308,7 @@
         rayLength: 2,
         pulsating: true,
         fadeDistance: 1.0,
-        saturation: 1.0,
+        saturation: isAndroid ? 1.1 : 1.0,
         followMouse: true,
         mouseInfluence: 0.1,
         noiseAmount: 0,
