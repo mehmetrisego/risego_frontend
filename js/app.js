@@ -32,7 +32,7 @@ let selectedCity = '';
 let phoneNumber = '';
 let otpTimer = null;
 let currentDriverData = null;
-let carBrandsWithModels = []; // modeller.txt verisi: [{ brand, models: [...] }]
+let carBrandsWithModels = []; // [{ brand, models: [...] }]
 
 // Sayfa yüklendiğinde kayıtlı oturumu kontrol et
 document.addEventListener('DOMContentLoaded', checkExistingSession);
@@ -1211,10 +1211,12 @@ async function loadCarBrandsAndYears() {
         return;
     }
 
+    const errEl = document.getElementById('newCarError');
     try {
         const res = await fetch(`${API_BASE}/drivers/car-brands`);
         const data = await res.json();
         if (data.success) {
+            if (errEl) errEl.textContent = '';
             carBrandsWithModels = data.brandsWithModels || [];
             const brands = data.brands || carBrandsWithModels.map(b => b.brand) || [];
 
@@ -1225,9 +1227,16 @@ async function loadCarBrandsAndYears() {
                 opt.textContent = b;
                 brandSelect.appendChild(opt);
             });
+        } else {
+            carBrandsWithModels = [];
+            brandSelect.innerHTML = '<option value="">Liste yüklenemedi</option>';
+            if (errEl) errEl.textContent = data.message || 'Marka listesi alınamadı.';
         }
     } catch (e) {
         console.error('Brands load error:', e);
+        carBrandsWithModels = [];
+        brandSelect.innerHTML = '<option value="">Bağlantı hatası</option>';
+        if (errEl) errEl.textContent = 'Marka listesi yüklenirken hata oluştu.';
     }
 
     const currentYear = new Date().getFullYear();
