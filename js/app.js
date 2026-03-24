@@ -778,14 +778,14 @@ let currentCampaignText = '';
 
 /**
  * API'den aktif kampanyayı çeker ve profil sayfasındaki kartı günceller.
- * Aktif kampanya yoksa varsayılan mesaj gösterilir.
+ * Oturumdaki şehir/park ile GET /api/drivers/campaign — public /api/campaign her zaman birincil parka düşerdi.
  */
 async function fetchCampaign() {
     const campaignEl = document.getElementById('profileCampaignText');
     if (!campaignEl) return;
 
     try {
-        const response = await fetch(`${API_BASE}/campaign`);
+        const response = await authenticatedFetch(`${API_BASE}/drivers/campaign`);
         const data = await response.json();
 
         if (data.success && data.campaign && data.campaign.active && data.campaign.text) {
