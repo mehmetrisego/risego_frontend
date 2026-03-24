@@ -1,13 +1,14 @@
 // ============================================
 // RiseGo Sürücü Paneli - Frontend Application
 // ============================================
-// API Base: localhost'ta local sunucu (geliştirme), aksi halde Railway production backend.
+// API: localhost'ta yerel backend; üretimde Railway.
+const PRODUCTION_API = 'https://risegobackend-production-2e58.up.railway.app/api';
 const API_BASE = (function () {
-    if (typeof window === 'undefined') return 'https://risegobackend-production-bf6d.up.railway.app/api';
+    if (typeof window === 'undefined') return PRODUCTION_API;
     const h = window.location.hostname;
     const isLocalDev = h === 'localhost' || h === '127.0.0.1';
     if (isLocalDev) return 'http://localhost:3000/api';
-    return 'https://risegobackend-production-bf6d.up.railway.app/api';
+    return PRODUCTION_API;
 })();
 const SESSION_KEY = 'risego_session';
 const CITY_KEY = 'risego_city';
