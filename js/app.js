@@ -673,12 +673,10 @@ function openBankAccountModal() {
     closeAllModals();
     const modal = document.getElementById('bankAccountModal');
     if (!modal) return;
+    
+    hideAddBankAccountForm(); // Liste görünümünü göster
     setBankAccountMessage('', '');
     modal.classList.add('active');
-    setTimeout(() => {
-        const ibanInput = document.getElementById('bankIbanInput');
-        if (ibanInput) ibanInput.focus();
-    }, 150);
 }
 
 function closeBankAccountModal() {
@@ -688,10 +686,19 @@ function closeBankAccountModal() {
 }
 
 function formatBankIbanInput(input) {
-    // Sadece rakamlara izin ver (TR prefix input'ta yok, sadece sayı)
-    const digits = String(input.value || '').replace(/\D/g, '').slice(0, 24); // max 24 hane
-    const grouped = digits.match(/.{1,4}/g);
-    input.value = grouped ? grouped.join(' ') : digits;
+    // TR prefix'inden sonra gelen 24 haneyi 2-4-4-4-4-4-2 şeklinde grupla
+    const digits = String(input.value || '').replace(/\D/g, '').slice(0, 24);
+    
+    let parts = [];
+    if (digits.length > 0) parts.push(digits.substring(0, 2));
+    if (digits.length > 2) parts.push(digits.substring(2, 6));
+    if (digits.length > 6) parts.push(digits.substring(6, 10));
+    if (digits.length > 10) parts.push(digits.substring(10, 14));
+    if (digits.length > 14) parts.push(digits.substring(14, 18));
+    if (digits.length > 18) parts.push(digits.substring(18, 22));
+    if (digits.length > 22) parts.push(digits.substring(22, 24));
+    
+    input.value = parts.join(' ');
     setBankAccountMessage('', '');
 }
 
@@ -726,43 +733,120 @@ function updateBankAccountPreview(iban, accountHolderName) {
         return;
     }
 
-    // Tam IBAN'ı 4'lü gruplar halinde formatla
-    const grouped = normalizedIban.match(/.{1,4}/g);
-    const fullIbanFormatted = grouped ? grouped.join(' ') : normalizedIban;
+    // Tam IBAN'ı (TR dahil) 2-4-4-4-4-4-2 şeklinde formatla
+    let fullIbanFormatted = normalizedIban;
+    if (normalizedIban.startsWith('TR') && normalizedIban.length === 26) {
+        const d = normalizedIban.slice(2);
+        fullIbanFormatted = 'TR' + d.substring(0, 2) + ' ' + d.substring(2, 6) + ' ' + d.substring(6, 10) + ' ' + d.substring(10, 14) + ' ' + d.substring(14, 18) + ' ' + d.substring(18, 22) + ' ' + d.substring(22, 24);
+    }
     
     previewEl.textContent = `${accountHolderName} - ${fullIbanFormatted}`;
 }
 
-async function loadBankAccount() {
-    const ibanInput = document.getElementById('bankIbanInput');
-    const holderInput = document.getElementById('bankAccountHolderInput');
+// Banka hesapları verisi
+let driverBankAccounts = [];
 
-    if (!ibanInput || !holderInput) return;
+function showAddBankAccountForm() {
+    document.getElementById('bankAccountsListView').style.display = 'none';
+    document.getElementById('addBankAccountForm').style.display = 'block';
+    
+    // Formu temizle
+    document.getElementById('bankIbanInput').value = '';
+    document.getElementById('bankAccountHolderInput').value = '';
+    setBankAccountMessage('', '');
+}
+
+function hideAddBankAccountForm() {
+    document.getElementById('bankAccountsListView').style.display = 'block';
+    document.getElementById('addBankAccountForm').style.display = 'none';
+}
+
+async function loadBankAccount() {
+    const listEl = document.getElementById('bankAccountsList');
+    if (!listEl) return;
 
     try {
         const response = await authenticatedFetch(`${API_BASE}/drivers/bank-account`);
         const data = await response.json();
 
-        if (!data.success || !data.account) {
-            ibanInput.value = '';
-            holderInput.value = '';
-            updateBankAccountPreview('', '');
-            setBankAccountMessage('', '');
-            return;
+        if (data.success && data.accounts) {
+            driverBankAccounts = data.accounts;
+            renderBankAccountsList();
+            
+            // Preview kartını güncelle (ilk hesabı göster veya 'IBAN bilgisi eklenmedi' yaz)
+            if (driverBankAccounts.length > 0) {
+                const first = driverBankAccounts[0];
+                updateBankAccountPreview(first.iban, first.accountHolderName);
+            } else {
+                updateBankAccountPreview('', '');
+            }
         }
-
-        // IBAN'dan TR prefix'ini temizle (input TR'yi ayrı gösteriyor)
-        let normalizedIban = String(data.account.iban || '').replace(/\s+/g, '').toUpperCase();
-        if (normalizedIban.startsWith('TR')) normalizedIban = normalizedIban.slice(2);
-        const grouped = normalizedIban.match(/.{1,4}/g);
-        ibanInput.value = grouped ? grouped.join(' ') : normalizedIban;
-        holderInput.value = data.account.accountHolderName || '';
-        updateBankAccountPreview(normalizedIban, data.account.accountHolderName || '');
-        setBankAccountMessage('', '');
     } catch (error) {
         console.error('Bank account load error:', error);
-        updateBankAccountPreview('', '');
-        setBankAccountMessage('error', 'Hesap bilgileri yuklenemedi.');
+        setBankAccountMessage('error', 'Hesap bilgileri yüklenemedi.');
+    }
+}
+
+function renderBankAccountsList() {
+    const listEl = document.getElementById('bankAccountsList');
+    if (!listEl) return;
+
+    if (driverBankAccounts.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; padding:20px; font-size:0.85rem; color:var(--text-secondary);">Henüz bir banka hesabı eklemediniz.</p>';
+        return;
+    }
+
+    listEl.innerHTML = driverBankAccounts.map(acc => {
+        // IBAN'ı 2-4-4-4-4-4-2 şeklinde formatla
+        let iban = acc.iban;
+        let formatted = iban;
+        if (iban.startsWith('TR') && iban.length === 26) {
+            const d = iban.slice(2);
+            formatted = 'TR' + d.substring(0, 2) + ' ' + d.substring(2, 6) + ' ' + d.substring(6, 10) + ' ' + d.substring(10, 14) + ' ' + d.substring(14, 18) + ' ' + d.substring(18, 22) + ' ' + d.substring(22, 24);
+        }
+
+        return `
+            <div class="bank-account-card">
+                <div class="account-info">
+                    <span class="account-name">${acc.accountHolderName}</span>
+                    <span class="account-iban">${formatted}</span>
+                </div>
+                <button class="delete-account-btn" onclick="deleteBankAccount(${acc.id})" title="Sil">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6" />
+                    </svg>
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+async function deleteBankAccount(id) {
+    if (!confirm('Bu banka hesabını silmek istediğinize emin misiniz?')) return;
+
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/drivers/bank-account/${id}`, {
+            method: 'DELETE'
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            driverBankAccounts = driverBankAccounts.filter(a => a.id !== id);
+            renderBankAccountsList();
+            
+            // Preview güncelle
+            if (driverBankAccounts.length > 0) {
+                const first = driverBankAccounts[0];
+                updateBankAccountPreview(first.iban, first.accountHolderName);
+            } else {
+                updateBankAccountPreview('', '');
+            }
+        } else {
+            alert(data.message || 'Hesap silinemedi.');
+        }
+    } catch (error) {
+        console.error('Delete bank account error:', error);
+        alert('İşlem sırasında bir hata oluştu.');
     }
 }
 
@@ -805,19 +889,16 @@ async function saveBankAccount() {
         const data = await response.json();
 
         if (data.success) {
-            const normalizedIban = String(data.account?.iban || iban).replace(/\s+/g, '').toUpperCase();
-            const grouped = normalizedIban.match(/.{1,4}/g);
-            ibanInput.value = grouped ? grouped.join(' ') : normalizedIban;
-            const normalizedName = data.account?.accountHolderName || accountHolderName;
-            holderInput.value = normalizedName;
-            updateBankAccountPreview(normalizedIban, normalizedName);
+            // Listeyi yenile ve geri dön
+            await loadBankAccount();
+            hideAddBankAccountForm();
             setBankAccountMessage('success', 'Hesap bilgileri kaydedildi.');
         } else {
-            setBankAccountMessage('error', data.message || 'Kayit islemi basarisiz oldu.');
+            setBankAccountMessage('error', data.message || 'Kayıt işlemi başarısız oldu.');
         }
     } catch (error) {
         console.error('Bank account save error:', error);
-        setBankAccountMessage('error', 'Sunucuya baglanilamadi. Tekrar deneyin.');
+        setBankAccountMessage('error', 'Sunucuya bağlanılamadı. Tekrar deneyin.');
     } finally {
         bankAccountLoading = false;
         saveBtn.disabled = false;
@@ -918,6 +999,30 @@ async function openWithdrawModal() {
     if (btn)        btn.disabled           = true;
     if (cooldownEl) cooldownEl.style.display = 'none';
 
+    // Banka hesaplarını yükle
+    const bankSelect = document.getElementById('withdrawBankSelect');
+    if (bankSelect) {
+        bankSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+        try {
+            const resp = await authenticatedFetch(`${API_BASE}/drivers/bank-account`);
+            const data = await resp.json();
+            if (data.success && data.accounts && data.accounts.length > 0) {
+                bankSelect.innerHTML = data.accounts.map(acc => {
+                    let formatted = acc.iban;
+                    if (acc.iban.startsWith('TR') && acc.iban.length === 26) {
+                        const d = acc.iban.slice(2);
+                        formatted = 'TR' + d.substring(0, 2) + '...' + d.substring(22, 24);
+                    }
+                    return `<option value="${acc.id}">${acc.accountHolderName} (${formatted})</option>`;
+                }).join('');
+            } else {
+                bankSelect.innerHTML = '<option value="">⚠️ Hesap bulunamadı</option>';
+            }
+        } catch (e) {
+            bankSelect.innerHTML = '<option value="">Hata!</option>';
+        }
+    }
+
     // ── Modalı hemen aç, veriyi arka planda getir ──────────────
     modal.classList.add('active');
 
@@ -1000,13 +1105,17 @@ async function openWithdrawModal() {
         if (btn) btn.disabled = true;
     }
 
-    // ── İBAN bilgisi ──────────────────────────────────────────────────────────
-    const ibanPreview = document.getElementById('bankAccountPreview')?.textContent || '';
-    const ibanInfoEl  = document.getElementById('withdrawIbanInfo');
-    if (ibanInfoEl) {
-        ibanInfoEl.textContent = ibanPreview && ibanPreview !== 'IBAN bilgisi eklenmedi'
-            ? 'Hesap: ' + ibanPreview
-            : '⚠️ Henüz banka hesabı kaydedilmemiş. Lütfen önce hesap bilgilerinizi girin.';
+    // ── Banka Hesabı Kontrolü ──────────────────────────────────────────────────────────
+    const bankSelectEl = document.getElementById('withdrawBankSelect');
+    const selectedAccountId = bankSelectEl?.value;
+    if (!selectedAccountId) {
+        if (cooldownEl) {
+            cooldownEl.textContent = '⚠️ Lütfen önce bir banka hesabı kaydedin veya seçin.';
+            cooldownEl.style.display = 'block';
+            cooldownEl.style.background = 'rgba(239, 68, 68, 0.1)';
+            cooldownEl.style.color = '#ef4444';
+        }
+        if (btn) btn.disabled = true;
     }
 }
 
@@ -1064,10 +1173,12 @@ async function handleWithdraw() {
         return;
     }
 
-    // IBAN kontrolü
-    const ibanPreview = document.getElementById('bankAccountPreview')?.textContent || '';
-    if (!ibanPreview || ibanPreview === 'IBAN bilgisi eklenmedi') {
-        if (errEl) errEl.textContent = 'Lütfen önce Hesap Bilgileri kartından IBAN bilgilerinizi kaydedin.';
+    // Seçilen banka hesabı
+    const bankSelect = document.getElementById('withdrawBankSelect');
+    const bankAccountId = bankSelect?.value;
+    
+    if (!bankAccountId) {
+        if (errEl) errEl.textContent = 'Lütfen bir banka hesabı seçin.';
         return;
     }
 
@@ -1080,7 +1191,7 @@ async function handleWithdraw() {
         const response = await authenticatedFetch(`${API_BASE}/drivers/withdraw`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount })
+            body: JSON.stringify({ amount, bankAccountId })
         });
         const data = await response.json();
 
