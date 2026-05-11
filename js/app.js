@@ -702,6 +702,25 @@ function formatBankIbanInput(input) {
     setBankAccountMessage('', '');
 }
 
+function handleIbanPaste(event, input) {
+    event.preventDefault();
+    // Yapıştırılan metni al
+    const pasted = (event.clipboardData || window.clipboardData).getData('text');
+    // TR prefix'ini ve tüm rakam olmayan karakterleri temizle, ilk 24 rakamı al
+    const digits = pasted.replace(/^TR/i, '').replace(/\D/g, '').slice(0, 24);
+    // 2-4-4-4-4-4-2 formatında grupla
+    let parts = [];
+    if (digits.length > 0) parts.push(digits.substring(0, 2));
+    if (digits.length > 2) parts.push(digits.substring(2, 6));
+    if (digits.length > 6) parts.push(digits.substring(6, 10));
+    if (digits.length > 10) parts.push(digits.substring(10, 14));
+    if (digits.length > 14) parts.push(digits.substring(14, 18));
+    if (digits.length > 18) parts.push(digits.substring(18, 22));
+    if (digits.length > 22) parts.push(digits.substring(22, 24));
+    input.value = parts.join(' ');
+    setBankAccountMessage('', '');
+}
+
 function handleIbanKeydown(event, input) {
     // Harf tuşlarını engelle (sadece rakam, kontrol tuşları ve kısayollar)
     const allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Tab','Home','End'];
