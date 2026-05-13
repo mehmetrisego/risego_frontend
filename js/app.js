@@ -1107,8 +1107,9 @@ async function openWithdrawModal() {
             const next = new Date(status.cooldownUntil);
             const hh   = String(next.getHours()).padStart(2, '0');
             const mm   = String(next.getMinutes()).padStart(2, '0');
+            const minsLeft = status.minutesLeft || 1;
             if (cooldownEl) {
-                cooldownEl.textContent = `⏳ Bir sonraki çekim: ${hh}:${mm} (yaklaşık ${status.hoursLeft} saat kaldı)`;
+                cooldownEl.textContent = `⏳ Bir sonraki çekim: ${hh}:${mm} (yaklaşık ${minsLeft} dakika kaldı)`;
                 cooldownEl.style.display = 'block';
             }
             if (btn) btn.disabled = true;
@@ -1215,17 +1216,16 @@ async function handleWithdraw() {
         const data = await response.json();
 
         if (data.success) {
-            if (sucEl) sucEl.textContent = data.message || 'Para çekimi başarıyla gerçekleşti.';
+            // Mesaj: banka sıraya aldı, iade ihtimali var — kesin değil
+            const successMsg = data.message || 'Para çekme talebiniz alındı.';
+            if (sucEl) sucEl.textContent = successMsg + ' Banka işlemi birkaç dakika içinde tamamlanacaktır.';
             if (data.warning && errEl) errEl.textContent = '⚠️ ' + data.warning;
 
-            // Sonraki çekim saatini göster
-            if (data.nextWithdrawAt) {
-                const next = new Date(data.nextWithdrawAt);
-                const hh   = String(next.getHours()).padStart(2, '0');
-                const mm   = String(next.getMinutes()).padStart(2, '0');
+            // Sonraki çekim süresini göster
+            if (data.minutesLeft) {
                 const cooldownEl2 = document.getElementById('withdrawCooldownInfo');
                 if (cooldownEl2) {
-                    cooldownEl2.textContent = `⏳ Bir sonraki çekim yapabileceğiniz saat: ${hh}:${mm}`;
+                    cooldownEl2.textContent = `⏳ Bir sonraki çekim için ${data.minutesLeft} dakika beklemeniz gerekmektedir.`;
                     cooldownEl2.style.display = 'block';
                 }
             }
