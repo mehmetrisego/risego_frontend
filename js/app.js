@@ -6,8 +6,9 @@ const PRODUCTION_API = 'https://api.risegodriver.com/api';
 const API_BASE = (function () {
     if (typeof window === 'undefined') return PRODUCTION_API;
     const h = window.location.hostname;
-    const isLocalDev = h === 'localhost' || h === '127.0.0.1';
-    if (isLocalDev) return 'http://localhost:3000/api';
+    // Yerel geliştirme IP'leri (PC IP'si dahil)
+    const isLocalDev = h === 'localhost' || h === '127.0.0.1' || h === '192.168.1.102';
+    if (isLocalDev) return `http://${h}:3000/api`;
     return PRODUCTION_API;
 })();
 const SESSION_KEY = 'risego_session';
@@ -1848,6 +1849,106 @@ function updateDriverCarDisplay(car) {
 }
 
 // ============================================
+// Para Çekim Geçmişi
+// ============================================
+
+async function openWithdrawHistoryModal() {
+    closeAllModals();
+    const modal = document.getElementById('withdrawHistoryModal');
+    if (!modal) return;
+
+    modal.classList.add('active');
+    await fetchWithdrawHistory();
+}
+
+function closeWithdrawHistoryModal() {
+    const modal = document.getElementById('withdrawHistoryModal');
+    if (!modal) return;
+    modal.classList.remove('active');
+}
+
+async function fetchWithdrawHistory() {
+    const contentEl = document.getElementById('withdrawHistoryContent');
+    if (!contentEl) return;
+
+    contentEl.innerHTML = `
+        <div class="history-loading">
+            <div class="spinner"></div>
+            <p>Yükleniyor...</p>
+        </div>
+    `;
+
+    try {
+        const response = await authenticatedFetch(`${API_BASE}/drivers/withdraw-history`);
+        const data = await response.json();
+
+        if (data.success && data.logs) {
+            renderWithdrawHistory(data.logs);
+        } else {
+            contentEl.innerHTML = `<p class="history-error">${data.message || 'Geçmiş yüklenemedi.'}</p>`;
+        }
+    } catch (error) {
+        console.error('Fetch history error:', error);
+        contentEl.innerHTML = `<p class="history-error">Bağlantı hatası oluştu.</p>`;
+    }
+}
+
+function renderWithdrawHistory(logs) {
+    const contentEl = document.getElementById('withdrawHistoryContent');
+    if (!contentEl) return;
+
+    if (!logs || logs.length === 0) {
+        contentEl.innerHTML = `
+            <div class="history-empty">
+                <p>Henüz bir çekim talebiniz bulunmuyor.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = '<div class="history-list">';
+    logs.forEach(log => {
+        const date = new Date(log.created_at).toLocaleString('tr-TR', {
+            day: '2-digit', month: '2-digit', year: 'numeric',
+            hour: '2-digit', minute: '2-digit'
+        });
+
+        let statusClass = 'status-pending';
+        let statusText = 'Bekliyor';
+
+        if (log.status === 'success') {
+            statusClass = 'status-success';
+            statusText = 'Tamamlandı';
+        } else if (log.status === 'bank_returned' || log.status === 'error' || log.status === 'refunded') {
+            statusClass = 'status-error';
+            statusText = log.status === 'refunded' ? 'İade Edildi' : 'Başarısız';
+        } else if (log.status === 'pending_bank') {
+            statusClass = 'status-pending-bank';
+            statusText = 'Banka Onayında';
+        }
+
+        const amountStr = parseFloat(log.amount).toFixed(2).replace('.', ',');
+
+        html += `
+            <div class="history-item">
+                <div class="history-item-header">
+                    <span class="history-date">${date}</span>
+                    <span class="history-status ${statusClass}">${statusText}</span>
+                </div>
+                <div class="history-item-body">
+                    <div class="history-amount">${amountStr} TL</div>
+                    <div class="history-iban">${log.beneficiary_iban}</div>
+                </div>
+                ${log.error_message && (log.status === 'error' || log.status === 'bank_returned' || log.status === 'refunded') ? 
+                  `<div class="history-error-msg">${log.error_message}</div>` : ''}
+            </div>
+        `;
+    });
+    html += '</div>';
+    contentEl.innerHTML = html;
+}
+
+// ============================================
 // Enter key handler
 // ============================================
 
@@ -1866,6 +1967,12 @@ document.addEventListener('keydown', (e) => {
         const campaignModal = document.getElementById('campaignModal');
         if (campaignModal && campaignModal.classList.contains('active')) {
             closeCampaignModal();
+            return;
+        }
+        const historyModal = document.getElementById('withdrawHistoryModal');
+        if (historyModal && historyModal.classList.contains('active')) {
+            closeWithdrawHistoryModal();
+            return;
         }
         return;
     }

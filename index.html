@@ -320,6 +320,19 @@
                         </div>
                     </div>
 
+                    <div class="profile-card withdraw-history-card" onclick="openWithdrawHistoryModal()" role="button" tabindex="0">
+                        <div class="card-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 8v4l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="card-content">
+                            <p class="card-label">Çekim Geçmişi</p>
+                            <p class="card-value history-hint">Geçmiş taleplerinizi görün &rarr;</p>
+                        </div>
+                    </div>
+
                     <!-- Yandex Sürücü Sözleşmesi Kartı -->
                     <div class="profile-card document-card" onclick="openYandexSozlesmeModal()" role="button" tabindex="0">
                         <div class="card-icon">
@@ -728,6 +741,21 @@
                     <div class="spinner"></div>
                 </span>
             </button>
+        </div>
+    </div>
+
+    <!-- Çekim Geçmişi Modal -->
+    <div id="withdrawHistoryModal" class="modal" onclick="if(event.target===this)closeWithdrawHistoryModal()">
+        <div class="modal-content modal-history" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeWithdrawHistoryModal()" title="Kapat">&times;</button>
+            <h3 class="modal-title">Çekim Geçmişi</h3>
+            <div id="withdrawHistoryContent" class="history-modal-body">
+                <div class="history-loading">
+                    <div class="spinner"></div>
+                    <p>Yükleniyor...</p>
+                </div>
+            </div>
+            <button type="button" class="btn-primary btn-sm" onclick="closeWithdrawHistoryModal()">Kapat</button>
         </div>
     </div>
 
