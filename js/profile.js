@@ -11,54 +11,73 @@ var currentCampaignText = '';
 
 // ─── Profil Sayfası ───────────────────────────────────────────────────────
 async function showProfilePage() {
-    document.getElementById('loginPage').classList.remove('active');
-    document.getElementById('profilePage').classList.add('active');
-    document.getElementById('stepOTP').classList.remove('active');
-    document.getElementById('stepPhone').classList.remove('active');
-    document.getElementById('stepRegister').classList.remove('active');
-    document.getElementById('stepCity').classList.add('active');
+    try {
+        document.getElementById('loginPage').classList.remove('active');
+        document.getElementById('profilePage').classList.add('active');
+        document.getElementById('stepOTP').classList.remove('active');
+        document.getElementById('stepPhone').classList.remove('active');
+        document.getElementById('stepRegister').classList.remove('active');
+        document.getElementById('stepCity').classList.add('active');
 
-    if (!currentDriverData) return;
+        if (!currentDriverData) {
+            console.warn('showProfilePage çağrıldı fakat currentDriverData boş.');
+            return;
+        }
 
-    // Temel bilgileri doldur
-    const name = currentDriverData.name || 'Sürücü';
-    document.getElementById('profileName').textContent = name;
-    document.getElementById('profileCity').textContent = selectedCity || currentDriverData.city || '';
-    document.getElementById('profilePhone').textContent = formatPhoneDisplay(currentDriverData.phone || phoneNumber || '');
+        // Temel bilgileri doldur
+        try {
+            const name = currentDriverData.name || 'Sürücü';
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileCity').textContent = selectedCity || currentDriverData.city || '';
+            const phoneStr = currentDriverData.phone || phoneNumber || '';
+            if (phoneStr && typeof formatPhoneDisplay === 'function') {
+                document.getElementById('profilePhone').textContent = formatPhoneDisplay(phoneStr);
+            } else {
+                document.getElementById('profilePhone').textContent = phoneStr;
+            }
 
-    // İnisiyaller
-    const nameParts = name.split(' ').filter(Boolean);
-    const initials = nameParts.length >= 2 
-        ? nameParts[0][0] + nameParts[nameParts.length - 1][0] 
-        : (nameParts[0] ? nameParts[0].substring(0, 2) : 'RG');
-    document.getElementById('profileInitials').textContent = initials.toUpperCase();
+            // İnisiyaller
+            const nameParts = name.split(' ').filter(Boolean);
+            const initials = nameParts.length >= 2 
+                ? nameParts[0][0] + nameParts[nameParts.length - 1][0] 
+                : (nameParts[0] ? nameParts[0].substring(0, 2) : 'RG');
+            document.getElementById('profileInitials').textContent = initials.toUpperCase();
+        } catch (e) { console.error('Temel bilgiler doldurulurken hata:', e); }
 
-    // Araç bilgisi
-    const carEl = document.getElementById('profileCar');
-    const editCarBtn = document.getElementById('editCarBtn');
-    if (currentDriverData.car) {
-        carEl.textContent = currentDriverData.car;
-        if (editCarBtn) editCarBtn.style.display = 'inline-flex';
-    } else {
-        carEl.textContent = '-';
-        if (editCarBtn) editCarBtn.style.display = 'none';
+        // Araç bilgisi
+        try {
+            const carEl = document.getElementById('profileCar');
+            const editCarBtn = document.getElementById('editCarBtn');
+            if (currentDriverData.car) {
+                carEl.textContent = currentDriverData.car;
+                if (editCarBtn) editCarBtn.style.display = 'inline-flex';
+            } else {
+                carEl.textContent = '-';
+                if (editCarBtn) editCarBtn.style.display = 'none';
+            }
+        } catch (e) { console.error('Araç bilgisi doldurulurken hata:', e); }
+
+        // Bakiye
+        try {
+            const balEl = document.getElementById('profileBalance');
+            if (balEl && currentDriverData.balance) {
+                balEl.textContent = currentDriverData.balance;
+            }
+            loadBalance(); // Yine de güncelini çekmek için asenkron çağrıyı yap
+        } catch (e) { console.error('Bakiye yüklenirken hata:', e); }
+
+        // Trip count (daily)
+        try { changeTripPeriod('daily'); } catch (e) { console.error('Trip period hatası:', e); }
+
+        // Banka hesabı
+        try { loadBankAccount(); } catch (e) { console.error('Banka hesabı yüklenirken hata:', e); }
+
+        // Kampanya
+        try { fetchCampaign(); } catch (e) { console.error('Kampanya çekilirken hata:', e); }
+
+    } catch (globalError) {
+        console.error('showProfilePage genel hata:', globalError);
     }
-
-    // Bakiye
-    const balEl = document.getElementById('profileBalance');
-    if (balEl && currentDriverData.balance) {
-        balEl.textContent = currentDriverData.balance;
-    }
-    loadBalance(); // Yine de güncelini çekmek için asenkron çağrıyı yap
-
-    // Trip count (daily)
-    changeTripPeriod('daily');
-
-    // Banka hesabı
-    loadBankAccount();
-
-    // Kampanya
-    fetchCampaign();
 }
 
 // ─── Bakiye ───────────────────────────────────────────────────────────────
