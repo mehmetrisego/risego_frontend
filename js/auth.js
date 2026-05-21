@@ -31,6 +31,10 @@ async function checkExistingSession() {
             currentDriverData = data.driver;
             selectedCity = localStorage.getItem(CITY_KEY) || '';
             phoneNumber  = localStorage.getItem(PHONE_KEY) || '';
+            
+            // DOM elemanlarının showProfilePage() içinde hata vermemesi için orijinal içeriği geri yükle
+            loginCard.innerHTML = originalContent;
+            
             showProfilePage();
             return;
         }

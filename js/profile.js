@@ -12,12 +12,23 @@ var currentCampaignText = '';
 // ─── Profil Sayfası ───────────────────────────────────────────────────────
 async function showProfilePage() {
     try {
-        document.getElementById('loginPage').classList.remove('active');
-        document.getElementById('profilePage').classList.add('active');
-        document.getElementById('stepOTP').classList.remove('active');
-        document.getElementById('stepPhone').classList.remove('active');
-        document.getElementById('stepRegister').classList.remove('active');
-        document.getElementById('stepCity').classList.add('active');
+        const loginPage = document.getElementById('loginPage');
+        if (loginPage) loginPage.classList.remove('active');
+        
+        const profilePage = document.getElementById('profilePage');
+        if (profilePage) profilePage.classList.add('active');
+        
+        const stepOTP = document.getElementById('stepOTP');
+        if (stepOTP) stepOTP.classList.remove('active');
+        
+        const stepPhone = document.getElementById('stepPhone');
+        if (stepPhone) stepPhone.classList.remove('active');
+        
+        const stepReg = document.getElementById('stepRegister');
+        if (stepReg) stepReg.classList.remove('active');
+        
+        const stepCity = document.getElementById('stepCity');
+        if (stepCity) stepCity.classList.add('active');
 
         if (!currentDriverData) {
             console.warn('showProfilePage çağrıldı fakat currentDriverData boş.');
