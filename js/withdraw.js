@@ -118,8 +118,18 @@ async function openWithdrawModal() {
             if (withdrawEl) withdrawEl.textContent = '-';
         }
 
-        // Cooldown işle
-        if (status.canWithdraw === false && status.cooldownUntil) {
+        // Bakım penceresi kontrolü (00:00–01:00)
+        if (status.maintenanceWindow) {
+            if (cooldownEl) {
+                cooldownEl.textContent = '🛠️ Sistem bakımı: Gece 00:00–01:00 arası para çekimi geçici olarak kapalıdır.';
+                cooldownEl.style.display = 'block';
+                cooldownEl.style.background = 'rgba(245, 158, 11, 0.1)';
+                cooldownEl.style.color = '#f59e0b';
+            }
+            if (btn) btn.disabled = true;
+        }
+        // Cooldown kontrolü
+        else if (status.canWithdraw === false && status.cooldownUntil) {
             const next = new Date(status.cooldownUntil);
             const hh   = String(next.getHours()).padStart(2, '0');
             const mm   = String(next.getMinutes()).padStart(2, '0');
