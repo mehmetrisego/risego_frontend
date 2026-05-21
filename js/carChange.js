@@ -3,8 +3,8 @@
 // ============================================
 // Gereksinim: utils.js önce yüklenmiş olmalı
 
-let pendingPlate = '';
-let pendingCar   = null;
+var pendingPlate = '';
+var pendingCar   = null;
 
 // ─── Plaka Değiştirme Modal ───────────────────────────────────────────────
 function openEditPlate() {

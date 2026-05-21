@@ -3,8 +3,8 @@
 // ============================================
 // Gereksinim: utils.js önce yüklenmiş olmalı
 
-let driverBankAccounts = [];
-let bankAccountLoading = false;
+var driverBankAccounts = [];
+var bankAccountLoading = false;
 
 // ─── Modal Yönetimi ────────────────────────────────────────────────────────
 function openBankAccountModal() {

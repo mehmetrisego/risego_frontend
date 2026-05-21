@@ -3,11 +3,11 @@
 // ============================================
 // Gereksinim: utils.js, bankAccount.js önce yüklenmiş olmalı
 
-let withdrawLoading = false;
+var withdrawLoading = false;
 const WITHDRAW_FEE  = 4; // TL — sunucuyla senkron
 
 // Modal açıldığında hesaplanan bakiye verileri
-let _withdrawData = { total: 0, blocked: 0, withdrawable: 0 };
+var _withdrawData = { total: 0, blocked: 0, withdrawable: 0 };
 
 // ─── Modal: Aç ────────────────────────────────────────────────────────────
 /**

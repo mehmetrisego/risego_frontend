@@ -3,11 +3,11 @@
 // ============================================
 // Gereksinim: utils.js, bankAccount.js, withdraw.js önce yüklenmiş olmalı
 
-let currentDriverData = null;
-let carBrandsWithModels = []; // [{ brand, models: [...] }]
-let tripCountCache  = {};
-let currentPeriod   = 'daily';
-let currentCampaignText = '';
+var currentDriverData = null;
+var carBrandsWithModels = []; // [{ brand, models: [...] }]
+var tripCountCache  = {};
+var currentPeriod   = 'daily';
+var currentCampaignText = '';
 
 // ─── Profil Sayfası ───────────────────────────────────────────────────────
 async function showProfilePage() {
@@ -21,18 +21,20 @@ async function showProfilePage() {
     if (!currentDriverData) return;
 
     // Temel bilgileri doldur
-    const fullName = `${currentDriverData.firstName || ''} ${currentDriverData.lastName || ''}`.trim();
-    document.getElementById('profileName').textContent = fullName || 'Sürücü';
+    const name = currentDriverData.name || 'Sürücü';
+    document.getElementById('profileName').textContent = name;
     document.getElementById('profileCity').textContent = selectedCity || currentDriverData.city || '';
     document.getElementById('profilePhone').textContent = formatPhoneDisplay(currentDriverData.phone || phoneNumber || '');
 
     // İnisiyaller
-    const parts    = fullName.split(' ').filter(Boolean);
-    const initials = parts.length >= 2 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] ? parts[0].substring(0, 2) : 'RG');
+    const nameParts = name.split(' ').filter(Boolean);
+    const initials = nameParts.length >= 2 
+        ? nameParts[0][0] + nameParts[nameParts.length - 1][0] 
+        : (nameParts[0] ? nameParts[0].substring(0, 2) : 'RG');
     document.getElementById('profileInitials').textContent = initials.toUpperCase();
 
     // Araç bilgisi
-    const carEl     = document.getElementById('profileCar');
+    const carEl = document.getElementById('profileCar');
     const editCarBtn = document.getElementById('editCarBtn');
     if (currentDriverData.car) {
         carEl.textContent = currentDriverData.car;
@@ -43,7 +45,11 @@ async function showProfilePage() {
     }
 
     // Bakiye
-    loadBalance();
+    const balEl = document.getElementById('profileBalance');
+    if (balEl && currentDriverData.balance) {
+        balEl.textContent = currentDriverData.balance;
+    }
+    loadBalance(); // Yine de güncelini çekmek için asenkron çağrıyı yap
 
     // Trip count (daily)
     changeTripPeriod('daily');

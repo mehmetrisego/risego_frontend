@@ -3,7 +3,7 @@
 // ============================================
 // Gereksinim: utils.js önce yüklenmiş olmalı
 
-let leaderboardLoaded = false;
+var leaderboardLoaded = false;
 
 // ─── Açma / Kapama ────────────────────────────────────────────────────────
 function openLeaderboard() {

@@ -3,9 +3,9 @@
 // ============================================
 // Gereksinim: utils.js önce yüklenmiş olmalı
 
-let selectedCity = '';
-let phoneNumber  = '';
-let otpTimer     = null;
+var selectedCity = '';
+var phoneNumber  = '';
+var otpTimer     = null;
 
 // Sayfa yüklendiğinde kayıtlı oturumu kontrol et
 document.addEventListener('DOMContentLoaded', checkExistingSession);
