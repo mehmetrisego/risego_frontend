@@ -118,10 +118,10 @@ async function openWithdrawModal() {
             if (withdrawEl) withdrawEl.textContent = '-';
         }
 
-        // Bakım penceresi kontrolü (00:00–01:00)
+        // Bakım penceresi kontrolü (06:00–07:00)
         if (status.maintenanceWindow) {
             if (cooldownEl) {
-                cooldownEl.textContent = '🛠️ Sistem bakımı: Gece 00:00–01:00 arası para çekimi geçici olarak kapalıdır.';
+                cooldownEl.textContent = '🛠️ Sistem bakımı: Sabah 06:00–07:00 arası para çekimi geçici olarak kapalıdır.';
                 cooldownEl.style.display = 'block';
                 cooldownEl.style.background = 'rgba(245, 158, 11, 0.1)';
                 cooldownEl.style.color = '#f59e0b';
