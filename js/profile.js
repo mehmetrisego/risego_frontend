@@ -68,14 +68,8 @@ async function showProfilePage() {
             }
         } catch (e) { console.error('Araç bilgisi doldurulurken hata:', e); }
 
-        // Bakiye
-        try {
-            const balEl = document.getElementById('profileBalance');
-            if (balEl && currentDriverData.balance) {
-                balEl.textContent = currentDriverData.balance;
-            }
-            loadBalance(); // Yine de güncelini çekmek için asenkron çağrıyı yap
-        } catch (e) { console.error('Bakiye yüklenirken hata:', e); }
+        // Bakiye — artık profil kartında gösterilmiyor (sadece Para Çek modalında güncel bakiye çekiliyor)
+        // loadBalance() çağrısı kaldırıldı: gereksiz Yandex API isteğinden tasarruf
 
         // Trip count (daily)
         try { changeTripPeriod('daily'); } catch (e) { console.error('Trip period hatası:', e); }

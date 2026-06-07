@@ -218,12 +218,15 @@ async function handleWithdraw() {
                     cooldownEl2.style.display = 'block';
                 }
             }
-            // Bakiye göstergelerini sıfırla
+            // Bakiye göstergelerini güncelle (çekilen tutarı düş)
+            const grossWithdrawn = data.grossAmount || amount;
+            const remaining = Math.max(0, (_withdrawData.withdrawable || 0) - grossWithdrawn);
+            const fmt = v => v.toFixed(2).replace('.', ',') + ' ₺';
             const profileBalEl = document.getElementById('profileBalance');
-            if (profileBalEl) profileBalEl.textContent = '0,00 ₺';
+            if (profileBalEl) profileBalEl.textContent = fmt(remaining);
             const withdrawEl2 = document.getElementById('withdrawWithdrawable');
-            if (withdrawEl2) withdrawEl2.textContent = '0,00 ₺';
-            _withdrawData = { total: 0, blocked: 0, withdrawable: 0 };
+            if (withdrawEl2) withdrawEl2.textContent = fmt(remaining);
+            _withdrawData = { total: remaining, blocked: 0, withdrawable: remaining };
         } else {
             if (errEl) errEl.textContent = data.message || 'Para çekimi sırasında hata oluştu.';
             if (btn) btn.disabled = false;
