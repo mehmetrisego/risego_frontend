@@ -14,9 +14,14 @@ var _withdrawData = { total: 0, blocked: 0, withdrawable: 0 };
  * Bakiye kartına tıklandığında açılır.
  * Modalı hemen açar, veriyi arka planda paralel çeker.
  */
+var _withdrawModalLoading = false; // Spam koruması: modal zaten açılıyorsa tekrar tıklamayı engelle
+
 async function openWithdrawModal() {
+    if (_withdrawModalLoading) return; // Zaten yükleniyor, tekrar tıklamayı engelle
+    _withdrawModalLoading = true;
+
     const modal = document.getElementById('withdrawModal');
-    if (!modal) return;
+    if (!modal) { _withdrawModalLoading = false; return; }
     closeAllModals();
 
     // Sıfırla
@@ -162,12 +167,15 @@ async function openWithdrawModal() {
         }
         if (btn) btn.disabled = true;
     }
+
+    _withdrawModalLoading = false; // Modal açıldı, kilit serbest
 }
 
 function closeWithdrawModal() {
     const modal = document.getElementById('withdrawModal');
     if (modal) modal.classList.remove('active');
     withdrawLoading = false;
+    _withdrawModalLoading = false; // Modal kapandı, tekrar açılabilir
 }
 
 // ─── Para Çek İşlemi ───────────────────────────────────────────────────────
